@@ -1,7 +1,7 @@
-// src/components/Layout.jsx
 import React, { useState, useEffect } from 'react';
-import { Outlet, Link, useNavigate } from 'react-router-dom';
+import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { getAccessToken, logout } from '../services/authService';
+import Footer from './Footer';
 
 function Header() {
   const [loggedIn, setLoggedIn] = useState(false);
@@ -21,16 +21,8 @@ function Header() {
     navigate('/signin');
   };
 
-  // общий класс для кнопки/ссылки
-  const btnClass = `
-    flex items-center justify-center
-    w-[94px] h-[44px]
-    rounded-[10px]
-    bg-[#1455FF0D]
-    hover:bg-[#1455FF1A]
-  `;
-
-  const icon = (
+  // стрелочная иконка, та же, что была
+  const arrowIcon = (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none">
       <path
         fill="#1455FF"
@@ -45,40 +37,71 @@ function Header() {
     </svg>
   );
 
+  // общие стили для кнопки Войти/Выйти
+  const authBtn = `
+    flex items-center justify-center
+    w-[94px] h-[44px]
+    rounded-[10px]
+    bg-[#1455FF0D]
+    hover:bg-[#1455FF1A]
+  `;
+
   return (
     <header className="w-full bg-white shadow-sm px-6 py-4 flex items-center">
       {/* Логотип */}
-      <Link
+      <NavLink
         to="/"
-        className="
-          font-roboto font-black text-[32px] leading-[22.08px]
-          tracking-[0px] text-[#1455FF]
-        "
+        className="font-roboto font-black text-[32px] text-[#1455FF]"
       >
         УКАЗКА
-      </Link>
+      </NavLink>
 
-      {/* Центр навигации */}
-      <nav className="flex-1 flex justify-center space-x-8">
-        <Link to="/" className="text-gray-600 hover:text-blue-600">
-          Главная
-        </Link>
-        <Link to="/about" className="text-gray-600 hover:text-blue-600">
-          О нас
-        </Link>
+      {/* Сегментированная навигация */}
+      <nav className="flex-1 flex justify-center">
+        <div className="inline-flex bg-[#F3F6FF] rounded-[12px] h-[44px]">
+          <NavLink
+            to="/"
+            end
+            className={({ isActive }) =>
+              `w-[94px] flex items-center justify-center font-roboto text-[16px]
+               ${
+                 isActive
+                   ? 'bg-[#3A86FF] text-white'
+                   : 'text-[#3A86FF] hover:bg-[#E5EEFF]'
+               }
+               rounded-l-[12px]`
+            }
+          >
+            Главная
+          </NavLink>
+          <NavLink
+            to="/questionnaires"
+            className={({ isActive }) =>
+              `w-[94px] flex items-center justify-center font-roboto text-[16px]
+               ${
+                 isActive
+                   ? 'bg-[#3A86FF] text-white'
+                   : 'text-[#3A86FF] hover:bg-[#E5EEFF]'
+               }
+               rounded-r-[12px]`
+            }
+          >
+            Анкеты
+          </NavLink>
+        </div>
       </nav>
 
-      {/* Справа: Войти или Выйти */}
+      {/* Кнопка Войти/Выйти */}
       {loggedIn ? (
-        <button onClick={handleLogout} className={btnClass}>
-          {icon}
+        <button onClick={handleLogout} className={authBtn}>
+          {arrowIcon}
           <span className="ml-2 text-[#1455FF]">Выйти</span>
         </button>
       ) : (
-        <Link to="/signin" className={btnClass}>
-          {icon}
+        <NavLink to="/signin" className={authBtn}>
+          {arrowIcon}
           <span className="ml-2 text-[#1455FF]">Войти</span>
-        </Link>
+        </NavLink>
       )}
     </header>
   );
@@ -88,14 +111,10 @@ export default function Layout() {
   return (
     <div className="flex flex-col min-h-screen bg-gray-50">
       <Header />
-
       <main className="flex-1 p-6 overflow-auto">
         <Outlet />
       </main>
-
-      <footer className="w-full bg-white py-4 text-center text-sm text-gray-500">
-        © Указка, 2025
-      </footer>
+      <Footer />
     </div>
   );
 }
