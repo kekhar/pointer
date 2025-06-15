@@ -14,25 +14,25 @@ function Header() {
     setLoggedIn(Boolean(getAccessToken()));
   }, []);
 
-  // Закрываем меню по клику вне
   useEffect(() => {
-    function onOutsideClick(e) {
+    const onOutsideClick = (e) => {
       if (wrapperRef.current && !wrapperRef.current.contains(e.target)) {
         setAuthMenuOpen(false);
       }
-    }
+    };
     document.addEventListener('mousedown', onOutsideClick);
     return () => document.removeEventListener('mousedown', onOutsideClick);
   }, []);
 
-  const handleLogout = async () => {
+  const handleLogout = async (redirect = true) => {
     try {
       await logout();
-    } catch (e) {
-      console.warn('Logout error:', e);
+    } catch (err) {
+      console.warn('Logout error:', err);
     }
     setLoggedIn(false);
-    navigate('/signin');
+    setAuthMenuOpen(false);
+    if (redirect) navigate('/signin');
   };
 
   const arrowIcon = (
@@ -91,46 +91,43 @@ function Header() {
         УКАЗКА
       </NavLink>
 
-      {/* Центр навигации */}
-      <nav className="flex-1 flex justify-center">
+      {/* Навигация: скрываем на экранах ≤550px */}
+      <nav className="flex-1 flex justify-center max-[550px]:hidden">
         <div className="inline-flex bg-[#F3F6FF] rounded-[12px] h-[44px]">
           <NavLink
             to="/"
             end
             className={({ isActive }) => `
-        w-[94px] flex items-center justify-center font-roboto text-[16px]
-        rounded-l-[12px]
-        transition-colors duration-200 ease-in-out
-        ${
-          isActive
-            ? 'bg-[#3A86FF] text-white hover:bg-[#1455FF] hover:shadow-md'
-            : 'text-[#3A86FF] hover:bg-[#E5EEFF] hover:shadow-md'
-        }
-      `}
+              w-[94px] flex items-center justify-center font-roboto text-[16px]
+              rounded-l-[12px] transition-colors duration-200 ease-in-out
+              ${
+                isActive
+                  ? 'bg-[#3A86FF] text-white hover:bg-[#1455FF]'
+                  : 'text-[#3A86FF] hover:bg-[#E5EEFF]'
+              }
+            `}
           >
             Главная
           </NavLink>
           <NavLink
             to="/questionnaires"
             className={({ isActive }) => `
-        w-[94px] flex items-center justify-center font-roboto text-[16px]
-        rounded-r-[12px]
-        transition-colors duration-200 ease-in-out
-        ${
-          isActive
-            ? 'bg-[#3A86FF] text-white hover:bg-[#1455FF] hover:shadow-md'
-            : 'text-[#3A86FF] hover:bg-[#E5EEFF] hover:shadow-md'
-        }
-      `}
+              w-[94px] flex items-center justify-center font-roboto text-[16px]
+              rounded-r-[12px] transition-colors duration-200 ease-in-out
+              ${
+                isActive
+                  ? 'bg-[#3A86FF] text-white hover:bg-[#1455FF]'
+                  : 'text-[#3A86FF] hover:bg-[#E5EEFF]'
+              }
+            `}
           >
             Анкеты
           </NavLink>
         </div>
       </nav>
 
-      {/* Справа: кнопка Войти/Профиль + дропдаун */}
+      {/* Авторизация / Профиль + дропдаун */}
       <div ref={wrapperRef} className="relative">
-        {/* Toggle-кнопка */}
         <button onClick={() => setAuthMenuOpen((v) => !v)} className={authBtn}>
           {loggedIn ? userIcon : arrowIcon}
           <span className="ml-2 text-[#1455FF]">
@@ -138,67 +135,32 @@ function Header() {
           </span>
         </button>
 
-        {/* Dropdown */}
         {authMenuOpen && (
           <div
-            className="
-              absolute right-0 top-full mt-2
-              bg-[#F3F6FF]
-              rounded-[16px]
-              shadow-md
-              px-2 py-3
-              flex flex-col items-center
-            "
+            className="absolute right-0 top-full mt-2 bg-[#F3F6FF] rounded-[16px] shadow-md px-2 py-3 flex flex-col items-center"
             style={{ width: 316 }}
           >
             {loggedIn ? (
               <>
-                <NavLink
-                  to="/"
-                  className="block w-[288px] h-[46px] mb-2 flex items-center justify-start pl-4 font-[Segoe UI] font-bold text-[16px] leading-[100%] text-[#3A86FF] rounded-[16px] hover:bg-[#E5EEFF]"
-                >
+                <NavLink to="/" className="...">
                   Главная
                 </NavLink>
-                <NavLink
-                  to="/questionnaires"
-                  className="block w-[288px] h-[46px] mb-2 flex items-center justify-start pl-4 font-[Segoe UI] font-bold text-[16px] leading-[100%] text-[#3A86FF] rounded-[16px] hover:bg-[#E5EEFF]"
-                >
+                <NavLink to="/questionnaires" className="...">
                   Анкеты
                 </NavLink>
-                <NavLink
-                  to="/profile"
-                  className="block w-[288px] h-[46px] mb-4 flex items-center justify-start pl-4 font-[Segoe UI] font-bold text-[16px] leading-[100%] text-[#3A86FF] rounded-[16px] hover:bg-[#E5EEFF]"
-                >
+                <NavLink to="/profile" className="...">
                   Профиль
                 </NavLink>
-                <button
-                  onClick={handleLogout}
-                  className="
-                    w-[288px] h-[46px]
-                    flex items-center justify-center
-                    bg-[#3A86FF] text-white
-                    font-[Segoe UI] font-bold text-[16px]
-                    rounded-[16px] cursor-pointer
-                    transition-colors duration-200 ease-in-out
-                    hover:bg-[#1455FF]
-                    hover:shadow-md
-                  "
-                >
+                <button onClick={() => handleLogout(false)} className="...">
                   Выход
                 </button>
               </>
             ) : (
               <>
-                <NavLink
-                  to="/signin"
-                  className="block w-[288px] h-[46px] mb-2 flex items-center justify-start pl-4 font-[Segoe UI] font-bold text-[16px] leading-[100%] text-[#3A86FF] rounded-[16px] hover:bg-[#E5EEFF]"
-                >
+                <NavLink to="/signin" className="...">
                   Вход
                 </NavLink>
-                <NavLink
-                  to="/signup"
-                  className="block w-[288px] h-[46px] flex items-center justify-start pl-4 font-[Segoe UI] font-bold text-[16px] leading-[100%] text-[#3A86FF] rounded-[16px] hover:bg-[#E5EEFF]"
-                >
+                <NavLink to="/signup" className="...">
                   Регистрация
                 </NavLink>
               </>

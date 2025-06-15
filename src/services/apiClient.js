@@ -1,4 +1,3 @@
-// src/services/apiClient.js
 import { getAccessToken, refreshToken, clearTokens } from './authService';
 
 export async function fetchWithAuth(path, init = {}) {
@@ -14,7 +13,6 @@ export async function fetchWithAuth(path, init = {}) {
   let res = await fetch(url, init);
 
   if (res.status === 401) {
-    // попробуем обновить токен
     try {
       const newAccess = await refreshToken();
       init.headers.Authorization = `Bearer ${newAccess}`;

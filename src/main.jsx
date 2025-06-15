@@ -1,3 +1,4 @@
+// src/index.js
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
@@ -13,8 +14,15 @@ ReactDOM.createRoot(document.getElementById('root')).render(
         position="top-center"
         toastOptions={{
           style: {
-            padding: '16px',
-            fontSize: '14px',
+            padding: '16px 24px',
+            fontSize: '20px',
+            display: 'inline-block',
+            width: 'auto',
+            maxWidth: '90vw',
+            whiteSpace: 'pre-wrap',
+          },
+          containerStyle: {
+            justifyContent: 'center',
           },
         }}
       />

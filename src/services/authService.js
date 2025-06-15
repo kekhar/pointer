@@ -17,7 +17,7 @@ export function clearTokens() {
   localStorage.removeItem(REFRESH_KEY);
 }
 
-// —————— Создать пользователя — POST /api/v1/users/ ——————
+// —————— Регистрация — POST /api/v1/users/ ——————
 export async function createUser(data) {
   const res = await fetch('/api/v1/users/', {
     method: 'POST',
@@ -27,7 +27,6 @@ export async function createUser(data) {
   const body = await res.json();
 
   if (!res.ok) {
-    // Обработка ошибок валидации
     if (
       body.error_code === 'ValidationException' &&
       body.additional_info?.errors
@@ -63,11 +62,10 @@ export async function createUser(data) {
     );
   }
 
-  // при успешном создании пользователь может сразу получить токены
+  // при успешном создании сразу могут прилететь токены
   if (body.access_token && body.refresh_token) {
     setTokens({ access: body.access_token, refresh: body.refresh_token });
   }
-
   return body;
 }
 
