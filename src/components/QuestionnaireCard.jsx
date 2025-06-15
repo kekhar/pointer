@@ -95,6 +95,7 @@ export default function QuestionnaireCard({ item }) {
             rounded-[14px]
             transition-colors duration-200 ease-in-out
             hover:bg-[#1455FF] hover:shadow-md
+            cursor-pointer
           "
         >
           Перейти
@@ -109,6 +110,7 @@ export default function QuestionnaireCard({ item }) {
             shadow-sm
             transition-colors duration-200 ease-in-out
             hover:bg-[#D1E4FF] hover:shadow-md
+            cursor-pointer
           "
         >
           Контакты
